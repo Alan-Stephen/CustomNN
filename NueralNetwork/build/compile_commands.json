@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/alan/Documents/MachineLearning/NueralNetwork/build",
+  "command": "/usr/bin/c++   -I/home/alan/Documents/MachineLearning/NueralNetwork/build/../include  -g   -o CMakeFiles/NueralNetwork.dir/home/alan/Documents/MachineLearning/NueralNetwork/src/main.cpp.o -c /home/alan/Documents/MachineLearning/NueralNetwork/src/main.cpp",
+  "file": "/home/alan/Documents/MachineLearning/NueralNetwork/src/main.cpp"
+},
+{
+  "directory": "/home/alan/Documents/MachineLearning/NueralNetwork/build",
+  "command": "/usr/bin/c++   -I/home/alan/Documents/MachineLearning/NueralNetwork/build/../include  -g   -o CMakeFiles/NueralNetwork.dir/home/alan/Documents/MachineLearning/NueralNetwork/src/matrix.cpp.o -c /home/alan/Documents/MachineLearning/NueralNetwork/src/matrix.cpp",
+  "file": "/home/alan/Documents/MachineLearning/NueralNetwork/src/matrix.cpp"
+},
+{
+  "directory": "/home/alan/Documents/MachineLearning/NueralNetwork/build",
+  "command": "/usr/bin/c++   -I/home/alan/Documents/MachineLearning/NueralNetwork/build/../include  -g   -o CMakeFiles/NueralNetwork.dir/home/alan/Documents/MachineLearning/NueralNetwork/src/nueralnetwork.cpp.o -c /home/alan/Documents/MachineLearning/NueralNetwork/src/nueralnetwork.cpp",
+  "file": "/home/alan/Documents/MachineLearning/NueralNetwork/src/nueralnetwork.cpp"
+}
+]
