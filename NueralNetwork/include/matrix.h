@@ -12,7 +12,9 @@ public:
 	Matrix(int x, int y);
 
 	Matrix operator+(const Matrix &other) const; 
+	Matrix Add(const Matrix &other) const;
 	Matrix Multiply(const double scalar) const; 
+	Matrix Multiply(const Matrix &other) const; 
 	inline double getElement(int x,int y) const;
 	void printMatrix();
 	inline void setElement(int x, int y,double value);

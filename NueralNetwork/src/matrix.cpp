@@ -63,6 +63,29 @@ inline void Matrix::setElement(int x, int y, double value)
 }
 
 Matrix Matrix::operator*(const Matrix &other) const {
+	return this->Multiply(other);	
+}
+
+
+Matrix Matrix::operator+(const Matrix &other) const{
+	int i;
+	Matrix matrix(other.n,other.m);
+	if(other.n != this->n || other.m != this->m) {
+		std::cout << "[ERROR] cannot add matrix invalid shapes";
+		return matrix;
+	}
+
+	for(i = 0; i < other.n * other.m; i++) {
+		matrix.setRawElement(i, this->getRawElement(i) + other.getRawElement(i));
+	}
+	return matrix;
+} 
+
+Matrix Matrix::operator*(const double scalar) const{
+	return this->Multiply(scalar);
+}
+
+Matrix Matrix::Multiply(const Matrix &other) const{
 	Matrix matrix(this->n, other.m);
 	int row, col, k;
 	double sum = 0;
@@ -86,25 +109,6 @@ Matrix Matrix::operator*(const Matrix &other) const {
 	}
 	return matrix;
 }
-
-Matrix Matrix::operator+(const Matrix &other) const{
-	int i;
-	Matrix matrix(other.n,other.m);
-	if(other.n != this->n || other.m != this->m) {
-		std::cout << "[ERROR] cannot add matrix invalid shapes";
-		return matrix;
-	}
-
-	for(i = 0; i < other.n * other.m; i++) {
-		matrix.setRawElement(i, this->getRawElement(i) + other.getRawElement(i));
-	}
-	return matrix;
-} 
-
-Matrix Matrix::operator*(const double scalar) const{
-	return this->Multiply(scalar);
-}
-
 // Random Matrix
 
 RandomMatrix::RandomMatrix(int n,int m){
