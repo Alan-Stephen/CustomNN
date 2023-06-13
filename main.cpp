@@ -2,46 +2,40 @@
 #include <vector>
 #include "include/matrix.h"
 #include "include/nueral_network.h"
+#include "include/LinearLayer.h"
+#include "include/py_net.h"
 
-// todo do a lot of refactoring
+// todo: do a lot of refactoring
 double functionToEstimate(const double in){
     return in * 2;
 }
 
 
 int main(int argc, char const *argv[]){
-    std::vector<int> structure = std::vector<int>({1});
-    NueralNetwork network = NueralNetwork(1,structure,1);
+    Matrix in = Matrix(1,1);
+    Matrix actual = Matrix(1,1);
 
-    network.randomizeWeightMatrix();
+    randomizeMatrix(in);
+    for(int i = 0; i < actual.numColumns * actual.numRows; i++){
+        double value = in.getRawElement(i) * 2;
+        actual.setRawElement(i,value);
+    }
+    std::vector<int> structure = {1,1};
 
-    Matrix input = Matrix(1,1);
-    randomizeMatrix(input);
+    PyNet net = PyNet(structure);
 
-    Matrix output = network.feedFoward(input);
-    Matrix actualOutput = Matrix(1,1);
-    actualOutput.setRawElement(0,input.getRawElement(0)*3);
-    std::cout << "\ninput ";
-    input.printMatrix();
-    std::cout << "output ";
-    output.printMatrix();
+    net.randomiseParams();
 
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
-    network.updateWeights(input,actualOutput);
+    Matrix out = net.feedFoward(in);
 
-    Matrix output2 = network.feedFoward(input);
-    std::cout << " output2";
-    output2.printMatrix();
+    std::cout << "out\n";
+    out.printMatrix();
+
+    std::cout << "actual\n";
+    actual.printMatrix();
+
+    Matrix loss = mseLossDerivitive(actual,out);
+    std::cout << "in and rest\n";
+    net.updateGradients(loss,in);
 
 }
