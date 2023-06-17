@@ -11,8 +11,8 @@ class LinearLayer {
 public:
     LinearLayer(int in,int out, PyNet &net,int layerNum);
 
-    [[nodiscard]] const Matrix &getWeightMatrix() const;
-    [[nodiscard]] const Matrix &getBiasMatrix() const;
+    [[nodiscard]] Matrix &getWeightMatrix();
+    [[nodiscard]] Matrix &getBiasMatrix();
 
     void randomiseWeights();
     void randomiseBiases();
@@ -23,10 +23,9 @@ public:
      * */
     [[nodiscard]] Matrix feedForward(const Matrix& in);
 
-    void updateGradients(const Matrix &error,const Matrix &previousLayerActivations);
+    void updateGradients(Matrix &error,Matrix &previousLayerActivations);
     void applyGradients();
     Matrix layerOutput();
-
     void clearGradients();
 
 private:

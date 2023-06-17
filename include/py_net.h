@@ -20,11 +20,15 @@ public:
 
     PyNet(std::vector<int> structure);
     Matrix getLayerOutputs(int layer);
-    void printLayers() const;
+    LinearLayer &getLayer(int layer);
+    void printLayers();
     void randomiseParams();
 
     Matrix feedFoward(const Matrix &in);
     void updateGradients(const Matrix &error, const Matrix &input);
+    void applyGradients();
+    void clearGradients();
+
 private:
 
     std::vector<LinearLayer> layers;

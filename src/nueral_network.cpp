@@ -55,7 +55,7 @@ Matrix NueralNetwork::feedFoward(const Matrix &in) {
 void NueralNetwork::updateWeights(Matrix &in, Matrix &actual) {
     double h = 0.001;
     for(Matrix& weightMatrix: weightMatrixs){
-        for(int i = 0; i < weightMatrix.numRows * weightMatrix.numColumns; i++){
+        for(int i = 0; i < weightMatrix.numRows * weightMatrix.numCols; i++){
             Matrix initialCost =  mseLoss(feedFoward(in),actual);
             weightMatrix.setRawElement(i,weightMatrix.getRawElement(i) + h);
 

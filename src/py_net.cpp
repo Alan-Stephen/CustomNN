@@ -14,7 +14,7 @@ PyNet::PyNet(std::vector<int> structure) {
     }
 }
 
-void PyNet::printLayers() const {
+void PyNet::printLayers() {
     for(int i = 0; i < layers.size(); i++){
         std::cout << "LAYER : "<< i <<"\n";
         layers.at(i).getWeightMatrix().printMatrix();
@@ -39,10 +39,42 @@ void PyNet::randomiseParams() {
 }
 
 void PyNet::updateGradients(const Matrix &error,const Matrix &input) {
-    layers.at(0).updateGradients(error,input);
+    Matrix tempError = error;
+    Matrix tempInput = input;
+    for(int layer = layers.size() - 1; layer >= 0; layer--){
+       LinearLayer &currentLayer = layers.at(layer);
+       if(layer == 0){
+           currentLayer.updateGradients(tempError, tempInput);
+           return;
+       }
+       else {
+           Matrix layerOutputCopy = getLayerOutputs(layer - 1);
+           currentLayer.updateGradients(tempError,layerOutputCopy);
+       }
+
+       // update errors
+        Matrix &weights = currentLayer.getWeightMatrix();
+        weights.transpose();
+        tempError = multiplyMatrix(weights,tempError);
+        weights.transpose();
+    }
 }
 
 Matrix PyNet::getLayerOutputs(int layer) {
     return layers.at(layer).layerOutput();
+}
+
+LinearLayer &PyNet::getLayer(int layer) {
+   return layers.at(0);
+}
+
+void PyNet::applyGradients() {
+    for(LinearLayer &layer: layers)
+        layer.applyGradients();
+}
+
+void PyNet::clearGradients() {
+    for(LinearLayer &layer: layers)
+        layer.clearGradients();
 }
 
