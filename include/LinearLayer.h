@@ -7,36 +7,32 @@
 
 #include "matrix.h"
 #include "py_net.h"
-#include "Layer.h"
-
-class LinearLayer : public Layer{
+class LinearLayer {
 public:
-    LinearLayer(int in,int out);
+    LinearLayer(int in,int out, PyNet &net,int layerNum);
 
     [[nodiscard]] Matrix &getWeightMatrix();
     [[nodiscard]] Matrix &getBiasMatrix();
 
     void randomiseWeights();
     void randomiseBiases();
-    void randomizeParams() override;
+    void randomiseParams();
 
     /**
      * Updates the output values for each layer as well.
      * */
-    [[nodiscard]] Matrix feedForward(const Matrix& in) override;
+    [[nodiscard]] Matrix feedForward(const Matrix& in);
 
-    void updateGradients(Matrix &error,Matrix &previousLayerActivations) override;
-    void applyGradients() override;
-    Matrix layerOutput() override;
-    void clearGradients() override;
-
-    Matrix getDerivitive(const Matrix &in) override;
-
-    void printLayer() const override;
+    void updateGradients(Matrix &error,Matrix &previousLayerActivations);
+    void applyGradients();
+    Matrix layerOutput();
+    void clearGradients();
 
 private:
+    int _layerNum;
 
     Matrix _output;
+    PyNet &_net;
 
     Matrix _weightGradientMatrix;
     Matrix _biasGradientMatrix;

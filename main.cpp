@@ -4,7 +4,6 @@
 #include "include/nueral_network.h"
 #include "include/LinearLayer.h"
 #include "include/py_net.h"
-#include "include/MNISTLabel.h"
 
 // todo: do a lot of refactoring
 double functionToEstimate(const double in){
@@ -13,23 +12,6 @@ double functionToEstimate(const double in){
 
 
 int main(int argc, char const *argv[]){
-
-    std::vector<MNISTLabel> data = parseMNISTLabels("../data/mnist_test.csv");
-
-
-
-    std::vector<int> structure = {784,100,10};
-    PyNet net = PyNet(structure);
-    net.randomiseParams();
-
-    net.feedFoward(data.at(0)._in).printMatrix();
-
-#if 0
-    Matrix test = Matrix(10,10);
-    randomizeMatrix(test);
-
-    std::cout << test.data.size();
-
     const int NUM_TESTS = 10;
     std::vector<Matrix> ins;
     std::vector<Matrix> actuals;
@@ -60,5 +42,4 @@ int main(int argc, char const *argv[]){
     }
     std::cout << "\ntest : ";
     net.feedFoward(ins.at(2)).printMatrix();
-#endif
 }
