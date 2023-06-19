@@ -14,6 +14,7 @@ double functionToEstimate(const double in){
 
 int main(int argc, char const *argv[]){
 
+    // todo : mnist_test is empty recopy it
     std::vector<MNISTLabel> data = parseMNISTLabels("../data/mnist_test.csv");
 
 
