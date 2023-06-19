@@ -4,7 +4,6 @@
 #include "../include/nueral_network.h"
 #include <cmath>
 
-// todo: remove input and output weights?
 NueralNetwork::NueralNetwork(int numInput, const std::vector<int>& hiddenLayerStructure,int numOutput) {
     this->structure = std::vector<int>();
     structure.push_back(numInput);
@@ -35,7 +34,7 @@ void NueralNetwork::randomizeWeightMatrix() {
 Matrix NueralNetwork::feedFoward(const Matrix &in) {
     /**
      * how does this work?
-     * takes in input multiplies by weight matrix, which gives output pass that through layers till you've finished
+     * takes in input multiplies by weight matrix, which gives output pass that through _layers till you've finished
      *
      * output matrix (weightMatrix.numRows,1)
      * matrixMult(weightMatrix,current,output)
@@ -55,7 +54,7 @@ Matrix NueralNetwork::feedFoward(const Matrix &in) {
 void NueralNetwork::updateWeights(Matrix &in, Matrix &actual) {
     double h = 0.001;
     for(Matrix& weightMatrix: weightMatrixs){
-        for(int i = 0; i < weightMatrix.numRows * weightMatrix.numColumns; i++){
+        for(int i = 0; i < weightMatrix.numRows * weightMatrix.numCols; i++){
             Matrix initialCost =  mseLoss(feedFoward(in),actual);
             weightMatrix.setRawElement(i,weightMatrix.getRawElement(i) + h);
 
