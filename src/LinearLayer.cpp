@@ -12,8 +12,8 @@ Matrix &LinearLayer::getBiasMatrix() {
     return _biasMatrix;
 }
 
-LinearLayer::LinearLayer(int in, int out, PyNet &network,int layerNum): _biasMatrix(out,1), _weightMatrix(out,in), _output(out,1),
-                                           _weightGradientMatrix(out,in), _biasGradientMatrix(out,1), _net(network), _layerNum(layerNum){}
+LinearLayer::LinearLayer(int in, int out): _biasMatrix(out,1), _weightMatrix(out,in), _output(out,1),
+                                           _weightGradientMatrix(out,in), _biasGradientMatrix(out,1){}
 
 Matrix LinearLayer::feedForward(const Matrix& in) {
     Matrix temp = multiplyMatrix(_weightMatrix,in);
@@ -34,7 +34,7 @@ Matrix LinearLayer::feedForward(const Matrix& in) {
 
 }
 
-void LinearLayer::randomiseParams() {
+void LinearLayer::randomizeParams() {
     this->randomiseWeights();
     this->randomiseBiases();
 }
@@ -75,6 +75,14 @@ void LinearLayer::clearGradients() {
     for(int i = 0; i < _biasGradientMatrix.numRows * _biasGradientMatrix.numCols; i++){
         _biasGradientMatrix.setRawElement(i,0);
     }
+}
+
+Matrix LinearLayer::getDerivitive(const Matrix &in) {
+    return _weightMatrix;
+}
+
+void LinearLayer::printLayer() const {
+    // todo : finish this shit
 }
 
 

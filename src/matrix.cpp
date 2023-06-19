@@ -1,14 +1,14 @@
 #include <cmath>
+#include <fstream>
 #include "../include/matrix.h"
+#include "../include/MNISTLabel.h"
 
-//todo : make raw elements of matrix iterable, replace double list with std::array
-Matrix::Matrix(int rows, int columns)
-{
-	data = std::make_unique<double[]>(rows * columns);
+Matrix::Matrix(int rows, int columns) {
+	data.reserve(rows * columns);
 	this->numRows = rows; // numRows
 	this->numCols = columns; // numCols
 	for (int i = 0; i < rows * columns; i++){
-		setRawElement(i, 0);
+		data.emplace_back(0);
 	}
 }
 
@@ -61,9 +61,10 @@ inline void Matrix::setElement(int cols, int rows, double value) {
 Matrix::Matrix(const Matrix& other){
 	this->numRows = other.numRows;
 	this->numCols = other.numCols;
-	this->data = std::make_unique<double[]>(other.numRows * other.numCols);
-	for(int i = 0; i < other.numRows * other.numCols; i++){
-		this->data[i] = other.data[i];
+	this->data = std::vector<double>();
+    data.reserve(other.numRows * other.numCols);
+	for(double value: other.data){
+        this->data.emplace_back(value);
 	}	
 }
 
@@ -71,9 +72,10 @@ Matrix &Matrix::operator=(const Matrix &matrix) {
     this->numRows = matrix.numRows;
     this->numCols = matrix.numCols;
 
-    this->data = std::make_unique<double[]>(this->numRows * this->numCols);
-    for(int i = 0; i < numRows * numCols; i++){
-        this->setRawElement(i,matrix.getRawElement(i));
+    this->data = std::vector<double>();
+    data.reserve(matrix.numRows * matrix.numCols);
+    for(double value: matrix.data){
+        data.emplace_back(value);
     }
 }
 
@@ -105,23 +107,28 @@ void Matrix::transpose() {
     isTransposed = ! isTransposed;
 }
 
+size_t Matrix::size() const {
+    return data.size();
+}
+
 void copyMatrix(const Matrix &from, Matrix &to) {
     to.numRows = from.numRows;
     to.numCols = from.numCols;
 
-    to.data = std::make_unique<double[]>(from.numRows * from.numCols);
-    for(int i = 0; i < from.numCols * from.numRows; i++) {
-        to.setRawElement(i,from.getRawElement(i));
+    to.data =  std::vector<double>();
+    to.data.reserve(from.numRows * from.numCols);
+    for(double values: from.data) {
+        to.data.emplace_back(values);
     }
 }
 
 void addMatrix(const Matrix &a, const Matrix &b, Matrix &out) {
-    if (a.numRows != b.numRows || a.numCols != b.numCols) {
+    if (!isSameDimensions(a,b)) {
         std::cout << "[ERROR] cannot add matrix invalid shapes";
         exit(1);
     }
 
-    for(int i = 0; i < a.numRows * a.numCols; i++){
+    for(int i = 0; i < a.size(); i++){
         double value = a.getRawElement(i) + b.getRawElement(i);
         out.setRawElement(i,value);
     }
@@ -153,8 +160,8 @@ void addMatrix(const Matrix &a, const Matrix &b, Matrix &out) {
  * Matrix must be initlaised otherwise seg fault will be thrown.
  * */
 void randomizeMatrix(Matrix &a){
-    for(int i = 0; i < a.numCols * a.numRows; i++){
-        a.setRawElement(i,((double) rand() / RAND_MAX));
+    for(double &value: a.data){
+        value = ((double) rand() / RAND_MAX);
     }
 }
 
@@ -169,7 +176,7 @@ Matrix minusMatrix(const Matrix &a, const Matrix &b){
     }
 
     Matrix result = Matrix(a.numRows, a.numCols);
-    for(int i = 0; i < a.numRows * a.numCols; i++){
+    for(int i = 0; i < a.size(); i++){
         result.setRawElement(i,a.getRawElement(i) - b.getRawElement(i));
     }
     return result;
@@ -177,7 +184,7 @@ Matrix minusMatrix(const Matrix &a, const Matrix &b){
 
 Matrix multiplyMatrix(const double scalar, const Matrix &a) {
    Matrix matrix = Matrix(a.numRows, a.numCols);
-   for(int i = 0; i < a.numRows * a.numCols; i++){
+   for(int i = 0; i < a.size(); i++){
        matrix.setRawElement(i,a.getRawElement(i) * scalar);
    }
    return matrix;
@@ -190,7 +197,7 @@ Matrix addMatrix(const Matrix &a, const Matrix &b){
     }
 
     Matrix output = Matrix(a.numRows,a.numCols);
-    for(int i = 0; i < a.numCols * a.numRows; i++){
+    for(int i = 0; i < a.size(); i++){
         double value = a.getRawElement(i) + b.getRawElement(i);
         output.setRawElement(i,value);
     }
@@ -218,8 +225,7 @@ Matrix mseLoss(const Matrix &pred, const Matrix &actual){
     }
 
     Matrix temp = Matrix(pred.numRows,pred.numCols);
-    for(int i = 0; i < pred.numCols * pred.numRows; i++){
-
+    for(size_t i = 0; i < pred.size(); i++) {
         double value = pow(pred.getRawElement(i) - actual.getRawElement(i),2.0F);
         temp.setRawElement(i,value);
     }
@@ -238,7 +244,11 @@ Matrix mseLossDerivitive(const Matrix &pred, const Matrix &actual) {
     return multiplyMatrix(2, minusMatrix(pred,actual));
 }
 
+/**
+ * not finished yet
+ * */
 Matrix dot(const Matrix &a, const Matrix &b) {
+    // todo : finish this
     if(a.numCols != 1 || b.numCols != 1){
         std::cout << "[ERROR] a or b are not proper vectors for dot product";
         exit(1);
@@ -247,5 +257,4 @@ Matrix dot(const Matrix &a, const Matrix &b) {
         std::cout << "[ERROR] size of a and b not same for dot product";
         exit(1);
     }
-
 }

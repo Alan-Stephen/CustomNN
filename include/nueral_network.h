@@ -7,7 +7,10 @@
 
 #include <vector>
 #include "matrix.h"
-
+/**
+ * use PyNet instead
+ * @deprecated
+ * */
 class NueralNetwork{
 public:
     std::vector<Matrix> weightMatrixs;
