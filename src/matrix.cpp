@@ -258,3 +258,10 @@ Matrix dot(const Matrix &a, const Matrix &b) {
         exit(1);
     }
 }
+
+double sum(const Matrix &a) {
+    double out = 0;
+    for(double value: a.data)
+        out += value;
+    return out;
+}
