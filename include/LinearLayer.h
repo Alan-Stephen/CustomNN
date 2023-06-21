@@ -33,6 +33,8 @@ public:
     Matrix getDerivitive(const Matrix &in) override;
 
     void printLayer() const override;
+    int getIn() const override;
+    int getOut() const override;
 
 private:
 

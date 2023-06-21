@@ -41,10 +41,20 @@ Matrix SigmoidLayer::getDerivitive(const Matrix &in) {
 }
 
 double SigmoidLayer::sigmoid(double in) const {
-    return (1 + exp(in * -1))
+    return (1 + exp(in * -1));
 }
 
 void SigmoidLayer::printLayer() const {
     return;
+}
+
+SigmoidLayer::SigmoidLayer(int in, int out): _in(in), _out(out) {}
+
+int SigmoidLayer::getIn() const {
+   return _in;
+}
+
+int SigmoidLayer::getOut() const {
+    return _out;
 }
 

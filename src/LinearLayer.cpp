@@ -52,8 +52,8 @@ void LinearLayer::updateGradients(Matrix &error, Matrix &previousLayerOutputs) {
     * how to update weight matrixes, D'output/D'weight = activations from previous layer
     * */
    previousLayerOutputs.transpose();
-   _weightGradientMatrix = multiplyMatrix(0.001,multiplyMatrix(error,previousLayerOutputs));
-    _biasGradientMatrix = multiplyMatrix(0.001,error);
+   _weightGradientMatrix = multiplyMatrix(0.000000000001,multiplyMatrix(error,previousLayerOutputs));
+    _biasGradientMatrix = multiplyMatrix(0.000000000001,error);
     previousLayerOutputs.transpose();
     // update bias gradients
 }
@@ -83,6 +83,14 @@ Matrix LinearLayer::getDerivitive(const Matrix &in) {
 
 void LinearLayer::printLayer() const {
     // todo : finish this shit
+}
+
+int LinearLayer::getIn() const {
+    return _weightMatrix.numCols;
+}
+
+int LinearLayer::getOut() const {
+    return _weightMatrix.numRows;
 }
 
 

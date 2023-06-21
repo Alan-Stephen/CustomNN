@@ -9,6 +9,8 @@
 
 class Layer {
 public:
+    virtual int getIn() const = 0;
+    virtual int getOut() const = 0;
     virtual void updateGradients(Matrix &error, Matrix &previousLayerActivations) = 0;
     virtual void applyGradients() = 0;
     virtual void clearGradients() = 0;
