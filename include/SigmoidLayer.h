@@ -10,15 +10,17 @@
 
 class SigmoidLayer : public Layer {
 public:
-    SigmoidLayer(int in, int out);
+    SigmoidLayer(int size);
     void updateGradients(Matrix &error, Matrix &previousLayerActivations) override;
     void applyGradients() override;
     void clearGradients() override;
     Matrix layerOutput() override;
     Matrix feedForward(const Matrix &in) override;
     void randomizeParams() override;
-    Matrix getDerivitive(const Matrix &in) override;
+    Matrix feedBackward(const Matrix &error) override;
     void printLayer() const override;
+
+    Matrix getDerivitive(const Matrix &in);
 
     int getIn() const override;
     int getOut() const override;

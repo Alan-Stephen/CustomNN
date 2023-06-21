@@ -4,15 +4,8 @@
 #include "../include/py_net.h"
 #include "../include/LinearLayer.h"
 
-PyNet::PyNet(std::vector<int> structure) {
-    _layers.reserve(structure.size());
+PyNet::PyNet() = default;
 
-    int prev = structure.at(0);
-    for(int i = 1; i < structure.size(); i++){
-        _layers.push_back(std::make_unique<LinearLayer>(prev,structure.at(i)));
-        prev = structure.at(i);
-    }
-}
 
 void PyNet::printLayers() {
     // finish this
@@ -50,12 +43,7 @@ void PyNet::updateGradients(const Matrix &error,const Matrix &input) {
            _layers.at(layer)->updateGradients(tempError,layerOutputCopy);
        }
 
-       // update errors
-        Matrix temp(1,1);
-        Matrix weights = _layers.at(layer)->getDerivitive(temp);
-        weights.transpose();
-        tempError = multiplyMatrix(weights,tempError);
-        weights.transpose();
+       tempError = _layers.at(layer)->feedBackward(tempError);
     }
 }
 
@@ -72,5 +60,13 @@ void PyNet::applyGradients() {
 void PyNet::clearGradients() {
     for(std::unique_ptr<Layer> &layer: _layers)
         layer->clearGradients();
+}
+
+void PyNet::addLayer(Layer *layer) {
+    if ((_layers.size() != 0) && (_layers.back()->getOut() != layer->getIn())){
+        std::cout << "[ERROR] Invalid Layer sizes";
+        exit(1);
+    }
+    _layers.push_back(std::unique_ptr<Layer>(layer));
 }
 

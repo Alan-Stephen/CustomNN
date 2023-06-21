@@ -30,6 +30,7 @@ public:
     Matrix &operator=(const Matrix &matrix);
     void minus(const Matrix &a);
     void transpose();
+    int maxIndex() const;
 
 protected:
     static inline int coordsToRaw(int x, int y,int coll) ;

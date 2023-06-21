@@ -19,7 +19,7 @@ class PyNet {
 public:
 
 
-    PyNet(std::vector<int> structure);
+    PyNet();
     Matrix getLayerOutputs(int layer);
     void printLayers();
     void randomiseParams();
@@ -28,6 +28,8 @@ public:
     void updateGradients(const Matrix &error, const Matrix &input);
     void applyGradients();
     void clearGradients();
+
+    void addLayer(Layer *layer);
 
 private:
 

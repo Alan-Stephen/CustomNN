@@ -26,9 +26,8 @@ double Matrix::getRawElement(int i) const
 	return data[i];
 }
 
-void Matrix::setRawElement(const int i,const double value)
-{
-	data[i] = value;
+void Matrix::setRawElement(const int i,const double value) {
+    data.at(i) = value;
 }
 
 int Matrix::coordsToRaw(const int x,const int y,const int coll)
@@ -111,6 +110,18 @@ size_t Matrix::size() const {
     return data.size();
 }
 
+int Matrix::maxIndex() const {
+    int max_index = -1;
+    double max_value = INTMAX_MIN;
+    for (int i = 0; i < data.size(); ++i) {
+       if(data.at(i) > max_value){
+           max_value = data.at(i);
+           max_index = i;
+       }
+    }
+    return max_index;
+}
+
 void copyMatrix(const Matrix &from, Matrix &to) {
     to.numRows = from.numRows;
     to.numCols = from.numCols;
@@ -156,12 +167,12 @@ void addMatrix(const Matrix &a, const Matrix &b, Matrix &out) {
 }
 
 /**
- * Sets values in matrix to a random number bewteen 0 < x < 1
+ * Sets values in matrix to a random number bewteen -1 < x < 1
  * Matrix must be initlaised otherwise seg fault will be thrown.
  * */
 void randomizeMatrix(Matrix &a){
     for(double &value: a.data){
-        value = ((double) rand() / RAND_MAX);
+        value = ((double) rand() / (RAND_MAX>>1)) - 1;
     }
 }
 
