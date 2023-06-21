@@ -12,7 +12,7 @@ Matrix &LinearLayer::getBiasMatrix() {
     return _biasMatrix;
 }
 
-LinearLayer::LinearLayer(int in, int out): _biasMatrix(out,1), _weightMatrix(out,in), _output(out,1),
+LinearLayer::LinearLayer(int in, int out,double learningRate): _learningRate(learningRate),_biasMatrix(out,1), _weightMatrix(out,in), _output(out,1),
                                            _weightGradientMatrix(out,in), _biasGradientMatrix(out,1){}
 
 Matrix LinearLayer::feedForward(const Matrix& in) {
@@ -52,8 +52,8 @@ void LinearLayer::updateGradients(Matrix &error, Matrix &previousLayerOutputs) {
     * how to update weight matrixes, D'output/D'weight = activations from previous layer
     * */
    previousLayerOutputs.transpose();
-   _weightGradientMatrix = multiplyMatrix(0.000000000001,multiplyMatrix(error,previousLayerOutputs));
-    _biasGradientMatrix = multiplyMatrix(0.000000000001,error);
+   _weightGradientMatrix = multiplyMatrix(error,previousLayerOutputs);
+    _biasGradientMatrix = error;
     previousLayerOutputs.transpose();
     // update bias gradients
 }
@@ -63,8 +63,8 @@ Matrix LinearLayer::layerOutput() {
 }
 
 void LinearLayer::applyGradients() {
-    _weightMatrix.minus(_weightGradientMatrix);
-    _biasMatrix.minus(_biasGradientMatrix);
+    _weightMatrix.minus(multiplyMatrix(_learningRate,_weightGradientMatrix));
+    _biasMatrix.minus(multiplyMatrix(_learningRate,_biasGradientMatrix));
 }
 
 void LinearLayer::clearGradients() {
@@ -77,10 +77,6 @@ void LinearLayer::clearGradients() {
     }
 }
 
-Matrix LinearLayer::getDerivitive(const Matrix &in) {
-    return _weightMatrix;
-}
-
 void LinearLayer::printLayer() const {
     // todo : finish this shit
 }
@@ -91,6 +87,14 @@ int LinearLayer::getIn() const {
 
 int LinearLayer::getOut() const {
     return _weightMatrix.numRows;
+}
+
+// takes in error passes it through layer.
+Matrix LinearLayer::feedBackward(const Matrix &error) {
+    _weightMatrix.transpose();
+    Matrix temp =  multiplyMatrix(_weightMatrix,error);
+    _weightMatrix.transpose();
+    return temp;
 }
 
 

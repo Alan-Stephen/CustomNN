@@ -17,7 +17,7 @@ public:
     virtual Matrix layerOutput() = 0;
     virtual Matrix feedForward(const Matrix &in) = 0;
     virtual void randomizeParams() = 0;
-    virtual Matrix getDerivitive(const Matrix &in) = 0;
+    virtual Matrix feedBackward(const Matrix &error) = 0;
     virtual void printLayer() const = 0;
 };
 #endif //CUSTOMNN_LAYER_H

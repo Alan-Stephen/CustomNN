@@ -11,7 +11,7 @@
 
 class LinearLayer : public Layer{
 public:
-    LinearLayer(int in,int out);
+    LinearLayer(int in,int out, double learningRate);
 
     [[nodiscard]] Matrix &getWeightMatrix();
     [[nodiscard]] Matrix &getBiasMatrix();
@@ -30,7 +30,7 @@ public:
     Matrix layerOutput() override;
     void clearGradients() override;
 
-    Matrix getDerivitive(const Matrix &in) override;
+    Matrix feedBackward(const Matrix &error) override;
 
     void printLayer() const override;
     int getIn() const override;
@@ -44,7 +44,7 @@ private:
     Matrix _biasGradientMatrix;
     Matrix _weightMatrix;
     Matrix _biasMatrix;
-
+    double _learningRate;
 };
 
 #endif //CUSTOMNN_LINEARLAYER_H
