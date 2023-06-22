@@ -276,3 +276,9 @@ double sum(const Matrix &a) {
         out += value;
     return out;
 }
+
+void clear(Matrix &in) {
+    for (int i = 0; i < in.size(); ++i) {
+        in.setRawElement(i,0);
+    }
+}

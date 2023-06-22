@@ -12,7 +12,7 @@ Matrix &LinearLayer::getBiasMatrix() {
     return _biasMatrix;
 }
 
-LinearLayer::LinearLayer(int in, int out,double learningRate): _learningRate(learningRate),_biasMatrix(out,1), _weightMatrix(out,in), _output(out,1),
+LinearLayer::LinearLayer(int in, int out,double learningRate, int batchSize): _batchSize(batchSize), _learningRate(learningRate),_biasMatrix(out,1), _weightMatrix(out,in), _output(out,1),
                                            _weightGradientMatrix(out,in), _biasGradientMatrix(out,1){}
 
 Matrix LinearLayer::feedForward(const Matrix& in) {
@@ -24,14 +24,9 @@ Matrix LinearLayer::feedForward(const Matrix& in) {
         std::cout << _output.numRows << " " << _output.numCols << "\n";
         exit(1);
     }
-
-    for(int i = 0; i < temp.numCols * temp.numRows; i++){
-        double value = temp.getRawElement(i);
-        _output.setRawElement(i,value);
-    }
-    _output = addMatrix(temp,_biasMatrix);
-    return addMatrix(temp,_biasMatrix);
-
+    temp = addMatrix(temp,_biasMatrix);
+    _output = temp;
+    return temp;
 }
 
 void LinearLayer::randomizeParams() {
@@ -52,8 +47,8 @@ void LinearLayer::updateGradients(Matrix &error, Matrix &previousLayerOutputs) {
     * how to update weight matrixes, D'output/D'weight = activations from previous layer
     * */
    previousLayerOutputs.transpose();
-   _weightGradientMatrix = multiplyMatrix(error,previousLayerOutputs);
-    _biasGradientMatrix = error;
+   _weightGradientMatrix.add(multiplyMatrix(error,previousLayerOutputs));
+    _biasGradientMatrix.add(error);
     previousLayerOutputs.transpose();
     // update bias gradients
 }
@@ -63,18 +58,13 @@ Matrix LinearLayer::layerOutput() {
 }
 
 void LinearLayer::applyGradients() {
-    _weightMatrix.minus(multiplyMatrix(_learningRate,_weightGradientMatrix));
-    _biasMatrix.minus(multiplyMatrix(_learningRate,_biasGradientMatrix));
+    _weightMatrix.minus(multiplyMatrix(_learningRate / _batchSize,_weightGradientMatrix));
+    _biasMatrix.minus(multiplyMatrix(_learningRate / _batchSize,_biasGradientMatrix));
 }
 
 void LinearLayer::clearGradients() {
-    for(int i = 0; i < _weightGradientMatrix.numRows * _weightGradientMatrix.numCols; i++){
-        _weightGradientMatrix.setRawElement(i,0);
-    }
-
-    for(int i = 0; i < _biasGradientMatrix.numRows * _biasGradientMatrix.numCols; i++){
-        _biasGradientMatrix.setRawElement(i,0);
-    }
+    clear(_weightGradientMatrix);
+    clear(_biasGradientMatrix);
 }
 
 void LinearLayer::printLayer() const {

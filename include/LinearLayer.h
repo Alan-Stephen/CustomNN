@@ -11,7 +11,7 @@
 
 class LinearLayer : public Layer{
 public:
-    LinearLayer(int in,int out, double learningRate);
+    LinearLayer(int in,int out, double learningRate, int batchSize);
 
     [[nodiscard]] Matrix &getWeightMatrix();
     [[nodiscard]] Matrix &getBiasMatrix();
@@ -45,6 +45,7 @@ private:
     Matrix _weightMatrix;
     Matrix _biasMatrix;
     double _learningRate;
+    int _batchSize;
 };
 
 #endif //CUSTOMNN_LINEARLAYER_H
