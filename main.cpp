@@ -7,18 +7,19 @@
 #include "include/MNISTLabel.h"
 #include "include/SigmoidLayer.h"
 
-// todo: do a lot of refactoring
 double functionToEstimate(const double in){
     return in * 2;
 }
 
 
+
 int main(int argc, char const *argv[]){
+    // with minibatching you delay application of gradients, apparently this is faster.
     const double learningRate = 1;
+    const int batchSize = 256;
     // Building network
     PyNet net = PyNet();
-    net.addLayer(new SigmoidLayer(784));
-    net.addLayer(new LinearLayer(784,10,learningRate));
+    net.addLayer(new LinearLayer(784,10,learningRate,batchSize));
     net.addLayer(new SigmoidLayer(10));
 
 
@@ -30,30 +31,48 @@ int main(int argc, char const *argv[]){
     net.randomiseParams();
 
     int right = 0;
-    int total = 0;
+    int batchCorrect = 0;
 
     for (int i = 0; i < data.size(); i++) {
-        Matrix out = net.feedFoward(data.at(i)._in);
+        Matrix &inRef = data.at(i)._in;
+
+        Matrix out = net.feedFoward(inRef);
 
         if(data.at(i)._out.maxIndex() == out.maxIndex()){
-           right++;
+            batchCorrect++;
+            right++;
         }
 
         Matrix loss = mseLossDerivitive(out, data.at(i)._out);
-        if (i % 1000 == 0) {
+        net.updateGradients(loss,inRef);
+        if (i % batchSize == 0) {
+            net.applyGradients();
+            net.clearGradients();
             out.printMatrix();
             data.at(i)._out.printMatrix();
             Matrix actualLoss = mseLoss(out, data.at(i)._out);
             double averageLoss = sum(actualLoss) / 10;
-            std::cout << right << " " << total << "\n";
+            std::cout << right << " " << i << "\n";
+            std::cout << "Batch correctness : " << ((double) batchCorrect / (double) 300) * 100.0 << "\n";
             std::cout << "Percentage right: " << ((double) right/(double) i) * 100.0 << "\n";
             std::cout << "loss : " << averageLoss << "\n";
             std::cout << "i : " << i << "\n";
+            batchCorrect = 0;
         }
-        net.updateGradients(loss, data.at(i)._in);
-        net.applyGradients();
-        net.clearGradients();
     }
+
+    right = 0;
+    std::vector<MNISTLabel> data2 = parseMNISTLabels("../data/mnist_train.csv");
+    for (int i = 0; i < data2.size(); ++i) {
+        Matrix &inRef = data2.at(i)._in;
+        Matrix out = net.feedFoward(inRef);
+
+        if(data2.at(i)._out.maxIndex() == out.maxIndex()){
+            right++;
+        }
+    }
+
+    std::cout << "TOTAL RIGHT: " << ((double) right) / ((double) data2.size()) * 100 << "\n";
 #if 0
     Matrix test = Matrix(10,10);
     randomizeMatrix(test);

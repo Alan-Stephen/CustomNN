@@ -11,7 +11,7 @@ void SigmoidLayer::applyGradients() {
 }
 
 void SigmoidLayer::clearGradients() {
-    clear(_output);
+    return;
 }
 
 Matrix SigmoidLayer::layerOutput() {
@@ -24,7 +24,7 @@ Matrix SigmoidLayer::feedForward(const Matrix &in) {
         double value = sigmoid(in.getRawElement(i));
         out.setRawElement(i,value);
     }
-    _output.add(out);
+    _output = out;
     return out;
 }
 
@@ -33,11 +33,9 @@ void SigmoidLayer::randomizeParams() {
 }
 
 Matrix SigmoidLayer::getDerivitive(const Matrix &in) {
-    // todo : make this more cache friendly
    Matrix out(_output.numRows,_output.numCols);
     for (int i = 0; i < _output.size();++i) {
         double value = sigmoid(_output.getRawElement(i));
-        // todo : to the most obvious optimistation ever
         double deriv = value  * (1 - value);
         out.setRawElement(i, deriv);
     }

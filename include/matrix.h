@@ -3,10 +3,7 @@
 #include <memory>
 #include <chrono>
 #include <vector>
-//TODO CHAGE TO CONST REFERENCES OT PREVENT COPYING
-// TODO MAKE A LOT OF THESE CLASSES STATIC, MAKE THEM USE AN OUT VARIALBE INSTEAD
-// TODO: MAKE NAMESPACE MATRIX FOR MATRIX FUNCTOINS, make this more imperitive.
-// TODO: Iterators?
+
 #ifndef CUSTOMNN_MATRIX_H
 #define CUSTOMNN_MATRIX_H
 
@@ -49,5 +46,6 @@ bool isSameDimensions(const Matrix &a, const Matrix &b);
 Matrix mseLossDerivitive(const Matrix &pred, const Matrix &actual);
 Matrix dot(const Matrix &a,const Matrix &b);
 double sum(const Matrix &a);
+void clear(Matrix &in);
 
 #endif

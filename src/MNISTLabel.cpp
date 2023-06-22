@@ -8,6 +8,7 @@
 
 
 std::vector<MNISTLabel> parseMNISTLabels(std::string filePath) {
+    // todo: remove the testing shit here 0-255 -> 0->1
     std::vector<MNISTLabel> parseMNISTLabels(std::string filePath);
     std::vector<MNISTLabel> output;
     std::ifstream inputFile(filePath);
@@ -24,14 +25,14 @@ std::vector<MNISTLabel> parseMNISTLabels(std::string filePath) {
         std::string value = line.substr(startPos,endPos-startPos);
         startPos = endPos;
         int parsedValue = std::stoi(value);
-        output.back()._out.setRawElement(parsedValue,parsedValue);
+        output.back()._out.setRawElement(parsedValue,1);
         const int NUM_FEATURES = 724;
         for(int i = 0; i < NUM_FEATURES; i++){
             startPos++;
             endPos = line.find(',',startPos);
 
             value = line.substr(startPos,endPos-startPos);
-            output.back()._in.setRawElement(i,std::stoi(value));
+            output.back()._in.setRawElement(i,(((double) std::stoi(value)) / 255) * 2);
             startPos = endPos;
         }
     }
