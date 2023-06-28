@@ -25,10 +25,10 @@ public:
     int getIn() const override;
     int getOut() const override;
 private:
-    int _in;
-    int _out;
+    int _size;
     double sigmoid(double in) const;
     Matrix _output;
+    Matrix _previousLayerOutputs;
 };
 
 #endif //CUSTOMNN_SIGMOIDLAYER_H

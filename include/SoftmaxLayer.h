@@ -1,20 +1,18 @@
 //
-// Created by alan on 22/06/23.
+// Created by alan on 26/06/23.
 //
 
-#ifndef CUSTOMNN_RELULAYER_H
-#define CUSTOMNN_RELULAYER_H
+#ifndef CUSTOMNN_SOFTMAXLAYER_H
+#define CUSTOMNN_SOFTMAXLAYER_H
 
-#include "matrix.h"
 #include "Layer.h"
 
-class ReLuLayer : public Layer {
+class SoftmaxLayer : public Layer {
 public:
-    ReLuLayer(size_t size, double leakValue = 0.0);
-
+    SoftmaxLayer(size_t size);
     int getIn() const override;
-    int getOut() const override;
-    void updateGradients(Matrix &error, Matrix &previousLayerActivations) override;;
+    virtual int getOut() const override;
+    void updateGradients(Matrix &error, Matrix &previousLayerActivations) override;
     void applyGradients() override;
     void clearGradients() override;
     Matrix layerOutput() override;
@@ -23,10 +21,10 @@ public:
     Matrix feedBackward(const Matrix &_output) override;
     void printLayer() const override;
 private:
-    size_t _size;
     Matrix _output;
+    size_t _size;
     Matrix _previousLayerOutputs;
-    double _leakValue;
 };
 
-#endif //CUSTOMNN_RELULAYER_H
+
+#endif //CUSTOMNN_SOFTMAXLAYER_H

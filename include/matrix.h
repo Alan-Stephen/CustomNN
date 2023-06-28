@@ -47,5 +47,6 @@ Matrix mseLossDerivitive(const Matrix &pred, const Matrix &actual);
 Matrix dot(const Matrix &a,const Matrix &b);
 double sum(const Matrix &a);
 void clear(Matrix &in);
+double crossEntropyLoss(const Matrix &pred, const Matrix &actual);
 
 #endif

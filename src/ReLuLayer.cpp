@@ -34,27 +34,30 @@ Matrix ReLuLayer::feedForward(const Matrix &in) {
     Matrix out(in.numRows,in.numCols);
 
     for (int i = 0; i < out.size(); ++i) {
-        double value = std::max(_leakValue * in.getRawElement(i),in.getRawElement(i));
+        double value = in.getRawElement(i);
+        if(value < 0)
+            value = value * _leakValue;
         out.setRawElement(i,value);
     }
 
     _output = out;
+    _previousLayerOutputs = in;
     return out;
 }
 
 Matrix ReLuLayer::feedBackward(const Matrix &error) {
-    Matrix out(error.numRows,error.numCols);
+    Matrix out(_output.numRows, _output.numCols);
 
-    for (int i = 0; i < error.size(); ++i) {
+    for (int i = 0; i < _previousLayerOutputs.size(); ++i) {
         double value;
-        if(error.getRawElement(i) <= 0)
-            value = error.getRawElement(i) * _leakValue;
+        if(_previousLayerOutputs.getRawElement(i) < 0)
+            value = _leakValue;
         else
-            value = error.getRawElement(i);
+            value = 1.0;
         out.setRawElement(i,value);
     }
 
-    return out;
+    return hadamardProduct(error,out);
 }
 
 void ReLuLayer::printLayer() const {

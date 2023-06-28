@@ -32,7 +32,7 @@ std::vector<MNISTLabel> parseMNISTLabels(std::string filePath) {
             endPos = line.find(',',startPos);
 
             value = line.substr(startPos,endPos-startPos);
-            output.back()._in.setRawElement(i,(((double) std::stoi(value)) / 255) * 2);
+            output.back()._in.setRawElement(i,(((double) std::stoi(value)) / 255));
             startPos = endPos;
         }
     }

@@ -25,6 +25,7 @@ Matrix SigmoidLayer::feedForward(const Matrix &in) {
         out.setRawElement(i,value);
     }
     _output = out;
+    _previousLayerOutputs = in;
     return out;
 }
 
@@ -33,9 +34,9 @@ void SigmoidLayer::randomizeParams() {
 }
 
 Matrix SigmoidLayer::getDerivitive(const Matrix &in) {
-   Matrix out(_output.numRows,_output.numCols);
-    for (int i = 0; i < _output.size();++i) {
-        double value = sigmoid(_output.getRawElement(i));
+   Matrix out(in.numRows,in.numCols);
+    for (int i = 0; i < in.size();++i) {
+        double value = sigmoid(in.getRawElement(i));
         double deriv = value  * (1 - value);
         out.setRawElement(i, deriv);
     }
@@ -54,17 +55,17 @@ void SigmoidLayer::printLayer() const {
     return;
 }
 
-SigmoidLayer::SigmoidLayer(int size): _in(size), _out(size), _output(size,1) {}
+SigmoidLayer::SigmoidLayer(int size): _size(size), _output(size,1) {}
 
 int SigmoidLayer::getIn() const {
-   return _in;
+   return _size;
 }
 
 int SigmoidLayer::getOut() const {
-    return _out;
+    return _size;
 }
 
 Matrix SigmoidLayer::feedBackward(const Matrix &error) {
-    return hadamardProduct(error, getDerivitive(_output));
+    return hadamardProduct(error, getDerivitive(_previousLayerOutputs));
 }
 
