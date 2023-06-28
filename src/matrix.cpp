@@ -252,7 +252,7 @@ bool isSameDimensions(const Matrix &a, const Matrix &b) {
 }
 
 Matrix mseLossDerivitive(const Matrix &pred, const Matrix &actual) {
-    return multiplyMatrix(2, minusMatrix(pred,actual));
+    return multiplyMatrix(1, minusMatrix(pred,actual));
 }
 
 /**
@@ -281,4 +281,10 @@ void clear(Matrix &in) {
     for (int i = 0; i < in.size(); ++i) {
         in.setRawElement(i,0);
     }
+}
+
+double crossEntropyLoss(const Matrix &pred, const Matrix &actual) {
+    std::cout << "finish cross entrop";
+    exit(1);
+    return 0;
 }
