@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "include/matrix.h"
 #include "include/nueral_network.h"
 #include "include/LinearLayer.h"
@@ -16,104 +17,72 @@ double functionToEstimate(const double in){
 
 
 int main(int argc, char const *argv[]){
-    // with minibatching you delay application of gradients, apparently this is faster.
+
     const double learningRate = 1;
-    double leakValue = 0.1;
-    const int batchSize = 32;
-    // Building network
+    const double leakValue = 0.1;
+    const int batchSize = 16;
+
     PyNet net = PyNet();
-    net.addLayer(new LinearLayer(784,10,learningRate,batchSize));
-    net.addLayer(new ReLuLayer(10,leakValue));
-    net.addLayer(new LinearLayer(10,10,learningRate,batchSize));
+
+    net.addLayer(new LinearLayer(784,100,learningRate,batchSize));
+    net.addLayer(new SigmoidLayer(100));
+    net.addLayer(new LinearLayer(100,10,learningRate,batchSize));
     net.addLayer(new SoftmaxLayer(10));
 
     // todo: randomise data as it's currently goes 9 8 7 6 5 4 3 2 1 : maybe see if it will improve peformance
     std::vector<MNISTLabel> data = parseMNISTLabels("../data/mnist_train.csv");
-
-
-
     net.randomiseParams();
 
-    int right = 0;
     int batchCorrect = 0;
+    int printCounter = 0;
     Matrix lossTotal(data.at(0)._out.numRows,1);
 
-    for (int i = 0; i < data.size(); i++) {
-        Matrix &inRef = data.at(i)._in;
+    const int NUM_REPS = 3;
+    const int PRINT_FREQ = 8;
+    for(int reps = 0; reps < NUM_REPS; reps++){
+        int batch = 0;
+        for(MNISTLabel label: data){
+            batch++;
 
-        Matrix out = net.feedFoward(inRef);
+            Matrix &actual = label._out;
+            Matrix pred = net.feedFoward(label._in);
 
-        if(data.at(i)._out.maxIndex() == out.maxIndex()){
-            batchCorrect++;
-            right++;
-        }
+            if(pred.maxIndex() == actual.maxIndex())
+                batchCorrect++;
 
-        Matrix loss = mseLossDerivitive(out,data.at(i)._out);
-        Matrix actualLoss = mseLoss(data.at(i)._out,out);
-        lossTotal.add(actualLoss);
-        net.updateGradients(loss,inRef);
-        if (i % batchSize == 0) {
-            net.applyGradients();
-            net.clearGradients();
-            out.printMatrix();
-            std::cout << "-------------------------" << "\n";
-            data.at(i)._out.printMatrix();
-            double averageLoss = sum(lossTotal) / (10.0 * batchSize);
-            clear(lossTotal);
-            std::cout << right << " " << i << "\n";
-            std::cout << "Batch correctness : " << ((double) batchCorrect / (double) batchSize) * 100.0 << "\n";
-            std::cout << "Percentage right: " << ((double) right/(double) i) * 100.0 << "\n";
-            std::cout << "loss : " << averageLoss << "\n";
-            std::cout << "i : " << i << "\n";
-            batchCorrect = 0;
-        }
-    }
+            Matrix error = crossEntropyLossDeriv(pred,actual);
+            lossTotal.add(crossEntropyLoss(pred,actual));
 
-    right = 0;
-    std::vector<MNISTLabel> data2 = parseMNISTLabels("../data/mnist_test.csv");
-    for (int i = 0; i < data2.size(); ++i) {
-        Matrix &inRef = data2.at(i)._in;
-        Matrix out = net.feedFoward(inRef);
+            net.updateGradients(error,label._in);
 
-        if(data2.at(i)._out.maxIndex() == out.maxIndex()){
-            right++;
+            if(batch % batchSize == 0){
+                net.applyGradients();
+                net.clearGradients();
+                batch = 0;
+                printCounter++;
+
+
+                if(printCounter % PRINT_FREQ == 0) {
+                    printCounter = 0;
+                    std::cout << "REP : " << reps << ", loss : " << sum(lossTotal) / (batchSize * 10 * PRINT_FREQ)
+                              << ", batch correctness : " << (((double) batchCorrect) / (((double) batchSize) * PRINT_FREQ)) * 100
+                              << "\n";
+
+                    batchCorrect = 0;
+                    clear(lossTotal);
+                }
+            }
         }
     }
 
-    std::cout << "TOTAL RIGHT: " << ((double) right) / ((double) data2.size()) * 100 << "\n";
-#if 0
-    Matrix test = Matrix(10,10);
-    randomizeMatrix(test);
+    std::vector<MNISTLabel> testing_data = parseMNISTLabels("../data/mnist_test.csv");
 
-    std::cout << test.data.size();
-
-    const int NUM_TESTS = 10;
-    std::vector<Matrix> ins;
-    std::vector<Matrix> actuals;
-
-    for(int i = 0; i < NUM_TESTS; i++){
-       ins.emplace_back(1,1);
-       actuals.emplace_back(1,1);
-       actuals.at(i).setRawElement(0,i*2);
-       ins.at(i).setRawElement(0,i);
+    int correct = 0;
+    for(MNISTLabel label: testing_data){
+        Matrix out = net.feedFoward(label._in);
+        if(out.maxIndex() == label._out.maxIndex())
+            correct++;
     }
-    net.randomiseParams();
-    for(int epoch = 0; epoch < 5000; epoch++) {
-        for (int i = 0; i < NUM_TESTS; i++) {
-            Matrix out = net.feedFoward(ins.at(i));
-            Matrix loss = mseLossDerivitive(out, actuals.at(i));
-            Matrix actualLoss = mseLoss(out,actuals.at(i));
-            std::cout << "\nout : ";
-            out.printMatrix();
-            std::cout << "loss : ";
-            actualLoss.printMatrix();
-            std::cout << "i : " << i << "\n";
-            net.updateGradients(loss, ins.at(i));
-            net.applyGradients();
-            net.clearGradients();
-        }
-    }
-    std::cout << "\ntest : ";
-    net.feedFoward(ins.at(2)).printMatrix();
-#endif
+
+    std::cout << "\n CORRECTNESS ON TEST : " <<  ((double) correct / (double) testing_data.size()) * 100 << "\n";
 }

@@ -283,8 +283,24 @@ void clear(Matrix &in) {
     }
 }
 
-double crossEntropyLoss(const Matrix &pred, const Matrix &actual) {
-    std::cout << "finish cross entrop";
-    exit(1);
-    return 0;
+Matrix crossEntropyLoss(const Matrix &pred,const Matrix &actual) {
+    Matrix out(pred.numRows,pred.numCols);
+    for (int i = 0; i < pred.size(); ++i) {
+        double y = actual.getRawElement(i);
+        double p = pred.getRawElement(i);
+        double value = -1.0 * (y * log(p) + (1.0 - y) * log(1.0 - p));
+        out.setRawElement(i,value);
+    }
+    return out;
+}
+
+Matrix crossEntropyLossDeriv(const Matrix &pred, const Matrix &actual) {
+    Matrix out(pred.numRows,pred.numCols);
+    for (int i = 0; i < pred.size(); ++i) {
+        double t = actual.getRawElement(i);
+        double p = pred.getRawElement(i);
+        double value = -1 * ((t/p) - ((1-t)/(1-p)));
+        out.setRawElement(i,value);
+    }
+    return out;
 }
