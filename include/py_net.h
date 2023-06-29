@@ -7,12 +7,13 @@
 
 #include <vector>
 #include "matrix.h"
+#include "Layer.h"
 
 /**
  *
- * alternative nueral network, a nueral network is just a array of layers.
+ * alternative nueral network, a nueral network is just a array of _layers.
  * */
-class LinearLayer;
+class Layer;
 
 class PyNet {
 public:
@@ -20,7 +21,6 @@ public:
 
     PyNet();
     Matrix getLayerOutputs(int layer);
-    LinearLayer &getLayer(int layer);
     void printLayers();
     void randomiseParams();
 
@@ -33,7 +33,7 @@ public:
 
 private:
 
-    std::vector<LinearLayer> layers;
+    std::vector<std::unique_ptr<Layer>> _layers;
 };
 
 
