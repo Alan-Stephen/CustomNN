@@ -2,7 +2,6 @@
 #include <vector>
 #include <algorithm>
 #include "include/matrix.h"
-#include "include/nueral_network.h"
 #include "include/LinearLayer.h"
 #include "include/py_net.h"
 #include "include/MNISTLabel.h"
