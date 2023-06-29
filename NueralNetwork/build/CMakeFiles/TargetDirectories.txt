@@ -1,3 +1,0 @@
-/home/alan/Documents/MachineLearning/NueralNetwork/build/CMakeFiles/rebuild_cache.dir
-/home/alan/Documents/MachineLearning/NueralNetwork/build/CMakeFiles/edit_cache.dir
-/home/alan/Documents/MachineLearning/NueralNetwork/build/CMakeFiles/NueralNetwork.dir
