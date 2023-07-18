@@ -43,7 +43,6 @@ Matrix SoftmaxLayer::feedForward(const Matrix &in) {
         double value = exp(in.getRawElement(i)) / total;
         out.setRawElement(i, value);
     }
-    _previousLayerOutputs = in;
     _output = out;
 
     return out;
