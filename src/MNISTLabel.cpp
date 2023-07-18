@@ -17,7 +17,7 @@ std::vector<MNISTLabel> parseMNISTLabels(std::string filePath) {
     std::getline(inputFile,line);
     while (std::getline(inputFile, line)){
         // one hot encoded output values
-        output.emplace_back(784,1,10,1);
+        output.emplace_back(28,28,10,1);
         int endPos = -1;
         int startPos = 0;
 
@@ -26,7 +26,7 @@ std::vector<MNISTLabel> parseMNISTLabels(std::string filePath) {
         startPos = endPos;
         int parsedValue = std::stoi(value);
         output.back()._out.setRawElement(parsedValue,1);
-        const int NUM_FEATURES = 724;
+        const int NUM_FEATURES = 784;
         for(int i = 0; i < NUM_FEATURES; i++){
             startPos++;
             endPos = line.find(',',startPos);
