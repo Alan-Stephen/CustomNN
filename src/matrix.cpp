@@ -59,23 +59,16 @@ inline void Matrix::setElement(int cols, int rows, double value) {
 
 Matrix::Matrix(const Matrix& other){
 	this->numRows = other.numRows;
+    this->isTransposed = other.isTransposed;
 	this->numCols = other.numCols;
-	this->data = std::vector<double>();
-    data.reserve(other.numRows * other.numCols);
-	for(double value: other.data){
-        this->data.emplace_back(value);
-	}	
+	this->data = other.data;
 }
 
 Matrix &Matrix::operator=(const Matrix &matrix) {
     this->numRows = matrix.numRows;
+    this->isTransposed = matrix.isTransposed;
     this->numCols = matrix.numCols;
-
-    this->data = std::vector<double>();
-    data.reserve(matrix.numRows * matrix.numCols);
-    for(double value: matrix.data){
-        data.emplace_back(value);
-    }
+    this->data = matrix.data;
 }
 
 void Matrix::add(const Matrix &a) {
@@ -120,17 +113,6 @@ int Matrix::maxIndex() const {
        }
     }
     return max_index;
-}
-
-void copyMatrix(const Matrix &from, Matrix &to) {
-    to.numRows = from.numRows;
-    to.numCols = from.numCols;
-
-    to.data =  std::vector<double>();
-    to.data.reserve(from.numRows * from.numCols);
-    for(double values: from.data) {
-        to.data.emplace_back(values);
-    }
 }
 
 void addMatrix(const Matrix &a, const Matrix &b, Matrix &out) {

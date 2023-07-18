@@ -135,6 +135,9 @@ void Conv2DLayer::randomizeParams() {
 }
 
 Matrix Conv2DLayer::feedBackward(const Matrix &error) {
+    // todo : complete this
+    std::cout << "Complete this";
+    exit(1);
     return Matrix();
 }
 

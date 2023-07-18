@@ -36,7 +36,6 @@ protected:
 
 Matrix hadamardProduct(const Matrix &a, const Matrix &b);
 Matrix minusMatrix(const Matrix &a, const Matrix &b);
-void copyMatrix(const Matrix &from, Matrix &to);
 Matrix multiplyMatrix(const Matrix &a, const Matrix &b);
 Matrix multiplyMatrix(const double scalar, const Matrix &a);
 Matrix addMatrix(const Matrix &a, const Matrix &b);
