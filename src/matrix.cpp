@@ -260,9 +260,7 @@ double sum(const Matrix &a) {
 }
 
 void clear(Matrix &in) {
-    for (int i = 0; i < in.size(); ++i) {
-        in.setRawElement(i,0);
-    }
+    std::fill(in.data.begin(), in.data.end(), 0);
 }
 
 Matrix crossEntropyLoss(const Matrix &pred,const Matrix &actual) {
